@@ -2,6 +2,7 @@ package hackathon.barclays.kyc;
 
 import hackathon.barclays.kyc.model.Customer;
 import hackathon.barclays.kyc.repository.CustomerRepository;
+import hackathon.barclays.kyc.rest.vo.CustomerInformation;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.util.Random;
 
 @RestController
 public class KycController {
@@ -24,11 +26,11 @@ public class KycController {
     @Autowired
     private CustomerRepository customerRepository;
 
+    @Autowired
+    private Random random;
+
     @RequestMapping(value ="/greeting",produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity greeting(@RequestParam(value = "name", required = false, defaultValue = "World") String name, Model model) {
-
-    customerRepository.save(new Customer("someId", "nikesh", 12, "addr", null, "someAdhar"));
-        System.out.println(customerRepository.findByName("nikesh"));
         model.addAttribute("name", name);
         return new ResponseEntity(model , HttpStatus.OK);
     }
@@ -37,7 +39,7 @@ public class KycController {
     @RequestMapping(value = "/uploadFile", method = RequestMethod.POST,produces = MediaType.APPLICATION_JSON_VALUE)
     public
     @ResponseBody
-    ResponseEntity uploadFileHandler(@RequestParam("name") String name,
+    ResponseEntity uploadFileHandler(@RequestParam("documentType") String name,
                                              @RequestParam("file") MultipartFile file,Model model) {
 
         if (!file.isEmpty()) {
@@ -70,6 +72,16 @@ model.addAttribute("message","Successfully uploaded file" +name);
             return new ResponseEntity(model, HttpStatus.NO_CONTENT);
 
         }
+    }
+
+    @RequestMapping(value ="/addCustomer",produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity addCustomer(@RequestBody CustomerInformation customerInformation, Model model) {
+
+        int customerId = random.nextInt();
+        customerRepository.save(new Customer(customerId, customerInformation.getName(),customerInformation.getAge(),customerInformation.getAddress()));
+        System.out.println(customerRepository.findByName("nikesh"));
+        model.addAttribute("name", customerId);
+        return new ResponseEntity(model , HttpStatus.OK);
     }
 
 }

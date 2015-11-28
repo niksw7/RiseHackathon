@@ -7,14 +7,14 @@ import java.util.Set;
 
 public class Customer {
     @Id
-    private String customerId;
+    private int customerId;
     private String name;
     private int age;
     private String address;
     private Set<String> documentName;
     private String aadharNumber;
 
-    public String getCustomerId() {
+    public int getCustomerId() {
         return customerId;
     }
 
@@ -37,12 +37,14 @@ public class Customer {
     public String getAadharNumber() {
         return aadharNumber;
     }
-
-    public Customer(String customerId, String name, int age, String address, Set<String> documentName, String aadharNumber) {
+    public Customer(int customerId, String name, int age, String address){
         this.customerId = customerId;
         this.name = name;
         this.age = age;
         this.address = address;
+    }
+    public Customer(int customerId, String name, int age, String address, Set<String> documentName, String aadharNumber) {
+        this(customerId,name,age,address);
         this.documentName = documentName;
         this.aadharNumber = aadharNumber;
     }
