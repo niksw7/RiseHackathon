@@ -6,6 +6,7 @@ import hackathon.barclays.kyc.rest.vo.AdharInformation;
 import hackathon.barclays.kyc.rest.vo.CustomerInformation;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -24,11 +25,16 @@ public class KycController {
     private static final org.slf4j.Logger logger = LoggerFactory
             .getLogger(KycController.class);
 
-    @Autowired
     private CustomerRepository customerRepository;
+    private  Random random;
+
 
     @Autowired
-    private Random random;
+    public KycController(CustomerRepository customerRepository,@Value("#{new java.util.Random()}")Random random){
+        this.customerRepository = customerRepository;
+        this.random = random;
+    }
+
 
     @RequestMapping(value = "/greeting", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity greeting(@RequestParam(value = "name", required = false, defaultValue = "World") String name, Model model) {
