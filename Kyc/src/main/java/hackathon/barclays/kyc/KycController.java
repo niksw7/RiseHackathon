@@ -80,7 +80,6 @@ public class KycController {
 
         int customerId = random.nextInt();
         customerRepository.save(new Customer(customerId, customerInformation.getName(), customerInformation.getAge(), customerInformation.getAddress()));
-        System.out.println(customerRepository.findByName("nikesh"));
         model.addAttribute("name", customerId);
         return new ResponseEntity(model, HttpStatus.OK);
     }
@@ -93,7 +92,10 @@ public class KycController {
         customerRepository.save(customer);
 
         //Let's mock the KYC thing for the time being as we do not have the KYC biometric in place
-        model.addAttribute("message","Authenticated by UDAI");
+
+        //Send the OTP to verify the Emudra
+
+        model.addAttribute("message","Authenticated by UDIAI");
         return new ResponseEntity(model,HttpStatus.OK);
 
     }
