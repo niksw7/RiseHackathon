@@ -1,6 +1,9 @@
 package hackathon.barclays.kyc;
 
+import hackathon.barclays.kyc.model.Customer;
+import hackathon.barclays.kyc.repository.CustomerRepository;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -15,8 +18,14 @@ public class KycController {
     private static final org.slf4j.Logger logger = LoggerFactory
             .getLogger(KycController.class);
 
+    @Autowired
+    private CustomerRepository customerRepository;
+
     @RequestMapping("/greeting")
     public String greeting(@RequestParam(value = "name", required = false, defaultValue = "World") String name, Model model) {
+
+    customerRepository.save(new Customer("someId", "nikesh", 12, "addr", null, "someAdhar"));
+        System.out.println(customerRepository.findByName("nikesh"));
         model.addAttribute("name", name);
         return "greeting";
     }
