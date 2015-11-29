@@ -1,0 +1,12 @@
+<resources>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="title_activity_register">RegisterActivity</string>
+    <string name="title_activity_login">LoginActivity</string>
+    <string name="title_activity_document_select">DocumentSelectActivity</string>
+    <string name="app_name">IdentityCrisis</string>
+    <string name="action_settings">Settings</string>
+    <string name="otp_wait">You will get an OTP shortly.Please wait for a while....</string>
+    <string name="title_activity_final">FinalActivity</string>
+    <string name="title_activity_logged_in">LoggedInActivity</string>
+</resources>

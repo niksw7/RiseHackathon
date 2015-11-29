@@ -47,6 +47,7 @@ public class KycController {
         map.put("Heroes","Coders");
         map.put("Hackers","Breakers");
         Customer customer = new Customer(1,"nikesh",12,"someaddress");
+        customerRepository.save(customer);
         return new ResponseEntity(map, HttpStatus.OK);
     }
 
@@ -114,12 +115,13 @@ public class KycController {
             String messageBody = "OTP for KYC details";
             SmsSubmissionResult[] smsSubmissionResults = nexmoSmsClient.submitMessage(new TextMessage(sender, to, messageBody));
             if(smsSubmissionResults[0].getStatus() == SmsSubmissionResult.STATUS_OK){
-                int code = random.nextInt();
+                int code = 1;
                 map.put("message", " OTP Authentication sent by e-mudra + "+ code);
+                System.out.println("code="+code);
                 verificationMap.put(customer.getCustomerId(),""+code+"");
                 customerRepository.save(customer);
             }else{
-                map.put("message", " OTP Authentication failed due to some reason");
+                map.put("message", " OTP Server failed due to some reason");
                 customerRepository.save(customer);
                 return new ResponseEntity(map, HttpStatus.OK);
             }
@@ -144,6 +146,7 @@ public class KycController {
             map.put("message:","success");
             return new ResponseEntity(map,HttpStatus.OK);
         }else {
+            map.put("message:","failure");
             return new ResponseEntity(map,HttpStatus.BAD_REQUEST);
         }
 

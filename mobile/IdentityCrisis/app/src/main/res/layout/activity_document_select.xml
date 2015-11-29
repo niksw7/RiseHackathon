@@ -1,0 +1,111 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/white"
+    tools:context="com.identitycrisis.UI.DocumentSelectActivity">
+
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/toolbar_layout"/>
+
+    <TextView
+        android:layout_marginTop="100dp"
+        android:text = "Select the document to upload"
+        android:textSize="@dimen/_22sp"
+        android:layout_marginLeft="20dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="20dp"
+        android:layout_marginTop="10dp">
+
+        <RadioButton
+            android:id="@+id/rdbtn_aadhar"
+            android:layout_marginTop="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="false"
+            />
+
+        <TextView
+            android:id="@+id/txt_aadhar"
+            android:layout_width="wrap_content"
+            android:layout_toRightOf="@id/rdbtn_aadhar"
+            android:textSize="20sp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="15dp"
+            android:text="Aadhar Card"
+            android:gravity="center_vertical"
+            android:layout_height="wrap_content" />
+
+        <RadioButton
+            android:id="@+id/rdbtn_passport"
+            android:layout_marginTop="10dp"
+            android:layout_below="@id/rdbtn_aadhar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:tag="passport"/>
+
+
+        <TextView
+            android:id="@+id/txt_passport"
+            android:layout_width="wrap_content"
+            android:layout_toRightOf="@id/rdbtn_passport"
+            android:layout_below="@id/txt_aadhar"
+            android:textSize="20sp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="20dp"
+            android:text="Passport"
+            android:gravity="center_vertical"
+            android:layout_height="wrap_content" />
+
+        <RadioButton
+            android:id="@+id/rdbtn_voterid"
+            android:layout_marginTop="10dp"
+            android:layout_width="wrap_content"
+            android:layout_below="@id/rdbtn_passport"
+            android:layout_height="wrap_content"
+            android:tag="voterid"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_toRightOf="@id/rdbtn_voterid"
+            android:textSize="20sp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="15dp"
+            android:text="Voter ID"
+            android:gravity="center_vertical"
+            android:layout_below="@id/txt_passport"
+            android:layout_height="wrap_content"
+            android:id="@+id/txt_voter_id" />
+
+
+        <RadioButton
+            android:id="@+id/rdbtn_driver_licence"
+            android:layout_marginTop="10dp"
+            android:layout_width="wrap_content"
+            android:layout_below="@id/rdbtn_voterid"
+            android:layout_height="wrap_content"
+            android:tag="driverlicence"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_toRightOf="@id/rdbtn_voterid"
+            android:textSize="20sp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="15dp"
+            android:text="Driver's Licence"
+            android:gravity="center_vertical"
+            android:layout_below="@id/txt_voter_id"
+            android:layout_height="wrap_content"
+            android:id="@+id/txt_driver_licence" />
+    </RelativeLayout>
+
+
+</LinearLayout>
