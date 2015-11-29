@@ -10,13 +10,18 @@ public class Customer {
     }
 
     @Id
-
     private Integer customerId;
     private String name;
     private int age;
     private String address;
     private Set<String> documentName;
     private String aadharNumber;
+
+    public void verify() {
+        this.status = VerificationStatus.Verified;
+    }
+
+    private VerificationStatus status;
 
     public Customer(int customerId, String name, int age, String address, Set<String> documentName, String aadharNumber) {
         this(customerId, name, age, address);
@@ -29,6 +34,7 @@ public class Customer {
         this.name = name;
         this.age = age;
         this.address = address;
+        this.status = VerificationStatus.Not_Verified;
     }
 
     public Integer getCustomerId() {

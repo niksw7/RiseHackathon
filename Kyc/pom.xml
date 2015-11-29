@@ -3,7 +3,18 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
+    <repositories>
+    <repository>
+        <id>javanto-releases</id>
+        <url>https://raw.github.com/javanto/repository/releases</url>
+        <releases>
+            <enabled>true</enabled>
+        </releases>
+        <snapshots>
+            <enabled>false</enabled>
+        </snapshots>
+    </repository>
+    </repositories>
     <groupId>hackathon.barclays.kyc</groupId>
     <artifactId>Kyc</artifactId>
     <version>1.0-SNAPSHOT</version>
@@ -36,7 +47,11 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-starter-data-mongodb</artifactId>
             </dependency>
-
+        <dependency>
+            <groupId>com.nexmo</groupId>
+            <artifactId>nexmo-java-sdk</artifactId>
+            <version>1.2</version>
+        </dependency>
     </dependencies>
 
     <build>
