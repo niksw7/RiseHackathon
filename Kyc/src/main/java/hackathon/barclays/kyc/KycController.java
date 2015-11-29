@@ -22,88 +22,99 @@ import java.util.Random;
 @RestController
 public class KycController {
 
-    private static final org.slf4j.Logger logger = LoggerFactory
-            .getLogger(KycController.class);
+	private static final org.slf4j.Logger logger = LoggerFactory
+			.getLogger(KycController.class);
 
+	@Autowired
+	private CustomerRepository customerRepository;
 
-    @Autowired
-    private CustomerRepository customerRepository;
+	@Autowired
+	private @Value("#{new java.util.Random()}") Random random;
 
-    @Autowired
-    private @Value("#{new java.util.Random()}")Random random;
+	@RequestMapping(value = "/greeting", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity greeting(
+			@RequestParam(value = "name", required = false, defaultValue = "World") String name,
+			Model model) {
+		model.addAttribute("name", name);
+		return new ResponseEntity(model, HttpStatus.OK);
+	}
 
+	@RequestMapping(value = "/uploadFile", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+	public @ResponseBody ResponseEntity uploadFileHandler(
+			@RequestParam("documentType") String name,
+			@RequestParam("file") MultipartFile file, Model model) {
 
-    @RequestMapping(value = "/greeting", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity greeting(@RequestParam(value = "name", required = false, defaultValue = "World") String name, Model model) {
-        model.addAttribute("name", name);
-        return new ResponseEntity(model, HttpStatus.OK);
-    }
+		if (!file.isEmpty()) {
+			try {
+				byte[] bytes = file.getBytes();
 
+				// Creating the directory to store file
+				String rootPath = System.getProperty("catalina.home");
+				File dir = new File(rootPath + File.separator + "tmpFiles");
+				if (!dir.exists())
+					dir.mkdirs();
 
-    @RequestMapping(value = "/uploadFile", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-    public
-    @ResponseBody
-    ResponseEntity uploadFileHandler(@RequestParam("documentType") String name,
-                                     @RequestParam("file") MultipartFile file, Model model) {
+				File serverFile = new File(dir.getAbsolutePath()
+						+ File.separator + name);
+				BufferedOutputStream stream = new BufferedOutputStream(
+						new FileOutputStream(serverFile));
+				stream.write(bytes);
+				stream.close();
 
-        if (!file.isEmpty()) {
-            try {
-                byte[] bytes = file.getBytes();
+				logger.info("Server File Location="
+						+ serverFile.getAbsolutePath());
+				model.addAttribute("message", "Successfully uploaded file"
+						+ name);
+				return new ResponseEntity("{\"message\":\"Success\"}",
+						HttpStatus.OK);
+			} catch (Exception e) {
+				model.addAttribute("message", "Your file uploading failed");
+				return new ResponseEntity("{\"message\":\"failure\"}",
+						HttpStatus.BAD_REQUEST);
+			}
+		} else {
+			model.addAttribute("message",
+					"Empty uploading of files is rejected");
+			return new ResponseEntity("{\"message\":\"Failure\"}",
+					HttpStatus.BAD_REQUEST);
 
-                // Creating the directory to store file
-                String rootPath = System.getProperty("catalina.home");
-                File dir = new File(rootPath + File.separator + "tmpFiles");
-                if (!dir.exists())
-                    dir.mkdirs();
+		}
+	}
 
-                File serverFile = new File(dir.getAbsolutePath()
-                        + File.separator + name);
-                BufferedOutputStream stream = new BufferedOutputStream(
-                        new FileOutputStream(serverFile));
-                stream.write(bytes);
-                stream.close();
+	@RequestMapping(value = "/addCustomer", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity addCustomer(
+			@RequestBody CustomerInformation customerInformation, Model model) {
 
-                logger.info("Server File Location="
-                        + serverFile.getAbsolutePath());
-                model.addAttribute("message", "Successfully uploaded file" + name);
-                return new ResponseEntity("{\"message\":\"Success\"}",HttpStatus.OK);
-            } catch (Exception e) {
-                model.addAttribute("message", "Your file uploading failed");
-                return new ResponseEntity("{\"message\":\"failure\"}",HttpStatus.BAD_REQUEST);
-            }
-        } else {
-            model.addAttribute("message", "Empty uploading of files is rejected");
-            return new ResponseEntity("{\"message\":\"Failure\"}",HttpStatus.BAD_REQUEST);
+		int customerId = random.nextInt();
+		customerRepository.save(new Customer(customerId, customerInformation
+				.getName(), customerInformation.getAge(), customerInformation
+				.getAddress(), customerInformation.getUserName(),
+				customerInformation.getPassword()));
+		model.addAttribute("name", customerId);
+		return new ResponseEntity("{\"message\":\"Success\"}", HttpStatus.OK);
+	}
 
-        }
-    }
+	@RequestMapping(value = "/updateAdharInformation", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity updateAdharInformation(
+			@RequestBody AdharInformation adharInformation, Model model) {
+		try {
+			Customer customer = customerRepository.findOne(adharInformation
+					.getCustomerId());
+			customer.setAadharNumber(adharInformation.getAdharNumber());
+			customerRepository.save(customer);
 
-    @RequestMapping(value = "/addCustomer", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity addCustomer(@RequestBody CustomerInformation customerInformation, Model model) {
+			// Let's mock the KYC thing for the time being as we do not have the
+			// KYC biometric in place
 
-        int customerId = random.nextInt();
-        customerRepository.save(new Customer(customerId, customerInformation.getName(), customerInformation.getAge(), customerInformation.getAddress()));
-        model.addAttribute("name", customerId);
-        return  new ResponseEntity("{\"message\":\"Success\"}",HttpStatus.OK);
-    }
+			// Send the OTP to verify the Emudra
 
-    @RequestMapping(value = "/updateAdharInformation", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity updateAdharInformation(@RequestBody AdharInformation adharInformation, Model model) {
-        try {
-            Customer customer = customerRepository.findOne(adharInformation.getCustomerId());
-            customer.setAadharNumber(adharInformation.getAdharNumber());
-            customerRepository.save(customer);
+			model.addAttribute("message", "Authenticated by UDIAI");
+			return new ResponseEntity("{\"message\":\"Sucess\"}", HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity("{\"message\":\"ERROR\"}",
+					HttpStatus.BAD_REQUEST);
+		}
 
-            //Let's mock the KYC thing for the time being as we do not have the KYC biometric in place
-
-            //Send the OTP to verify the Emudra
-
-            model.addAttribute("message", "Authenticated by UDIAI");
-            return new ResponseEntity("{\"message\":\"Sucess\"}", HttpStatus.OK);
-        }catch (Exception e){
-           return new ResponseEntity("{\"message\":\"ERROR\"}",HttpStatus.BAD_REQUEST);
-        }
-
-    }
+	}
 
 }
