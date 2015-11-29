@@ -15,7 +15,6 @@ public class Customer {
     private String address;
 	private String userName;
 	private String password;
-
 	private Set<String> documentName;
 	private String aadharNumber;
 
@@ -25,13 +24,16 @@ public class Customer {
 
     private VerificationStatus status;
 
-    public Customer(int customerId, String name, int age, String address, Set<String> documentName, String aadharNumber) {
-        this(customerId, name, age, address);
-        this.documentName = documentName;
-        this.aadharNumber = aadharNumber;
-    }
+	public Customer(Integer customerId, String name, int age, String address, String userName, String password, Set<String> documentName, String aadharNumber) {
+		this(customerId,name,age,address);
+		this.userName = userName;
+		this.password = password;
+		this.documentName = documentName;
+		this.aadharNumber = aadharNumber;
+		this.status = status;
+	}
 
-    public Customer(Integer customerId, String name, int age, String address){
+	public Customer(Integer customerId, String name, int age, String address){
         this.customerId = customerId;
         this.name = name;
         this.age = age;
@@ -53,6 +55,8 @@ public class Customer {
 		this.name = name;
 		this.age = age;
 		this.address = address;
+		this.userName = userName;
+		this.password = password;
 	}
 
 	public Integer getCustomerId() {

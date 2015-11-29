@@ -7,6 +7,7 @@ import hackathon.barclays.kyc.model.Customer;
 import hackathon.barclays.kyc.repository.CustomerRepository;
 import hackathon.barclays.kyc.rest.vo.AdharInformation;
 import hackathon.barclays.kyc.rest.vo.CustomerInformation;
+import hackathon.barclays.kyc.rest.vo.VerificationCode;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,12 +30,14 @@ public class KycController {
     private static final org.slf4j.Logger logger = LoggerFactory
             .getLogger(KycController.class);
 
-
     @Autowired
     private CustomerRepository customerRepository;
 
     @Autowired
     private @Value("#{new java.util.Random()}")Random random;
+
+
+    private HashMap<Integer,String> verificationMap = new HashMap<>();
 
 
     @RequestMapping(value = "/greeting", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -48,10 +51,21 @@ public class KycController {
     }
 
 
+    @RequestMapping(value = "/addCustomer", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity addCustomer(@RequestBody CustomerInformation customerInformation) {
+        HashMap<String,String> map = new HashMap<>();
+        int customerId = random.nextInt();
+        customerRepository.save(new Customer(customerId, customerInformation.getName(), customerInformation.getAge(), customerInformation.getAddress(),customerInformation.getUserName(),
+                customerInformation.getPassword()));
+        map.put("message","Success");
+        map.put("customerId", ""+customerId+"");
+        return new ResponseEntity(map, HttpStatus.OK);
+    }
+
     @RequestMapping(value = "/uploadFile", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public
     @ResponseBody
-    ResponseEntity uploadFileHandler(@RequestParam("documentType") String name,
+    ResponseEntity uploadFileHandle(@RequestParam("documentType") String name,
                                      @RequestParam("file") MultipartFile file) {
         Map<String,String> map = new HashMap<>();
         if (!file.isEmpty()) {
@@ -86,16 +100,6 @@ public class KycController {
         }
     }
 
-    @RequestMapping(value = "/addCustomer", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity addCustomer(@RequestBody CustomerInformation customerInformation) {
-HashMap<String,String> map = new HashMap<>();
-        int customerId = random.nextInt();
-        customerRepository.save(new Customer(customerId, customerInformation.getName(), customerInformation.getAge(), customerInformation.getAddress(),customerInformation.getUserName(),
-                customerInformation.getPassword()));
-        map.put("message","Success");
-        map.put("customerId", ""+customerId+"");
-        return new ResponseEntity(map, HttpStatus.OK);    }
-
     @RequestMapping(value = "/updateAdharInformation", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity updateAdharInformation(@RequestBody AdharInformation adharInformation) {
         try {
@@ -106,20 +110,19 @@ HashMap<String,String> map = new HashMap<>();
 
             NexmoSmsClient nexmoSmsClient = new NexmoSmsClient("b47acb3d","87b4d088");
             String sender = "918149660151";
-            String to = "918487959825";
+            String to = "8421186193";
             String messageBody = "OTP for KYC details";
             SmsSubmissionResult[] smsSubmissionResults = nexmoSmsClient.submitMessage(new TextMessage(sender, to, messageBody));
             if(smsSubmissionResults[0].getStatus() == SmsSubmissionResult.STATUS_OK){
-                map.put("message", " OTP Authentication sent by UDIAI");
-                customer.verify();
+                int code = random.nextInt();
+                map.put("message", " OTP Authentication sent by e-mudra + "+ code);
+                verificationMap.put(customer.getCustomerId(),""+code+"");
                 customerRepository.save(customer);
             }else{
                 map.put("message", " OTP Authentication failed due to some reason");
                 customerRepository.save(customer);
                 return new ResponseEntity(map, HttpStatus.OK);
             }
-
-
 
             //Let's mock the KYC thing for the time being as we do not have the KYC biometric in place
 
@@ -129,6 +132,19 @@ HashMap<String,String> map = new HashMap<>();
             return new ResponseEntity(map, HttpStatus.OK);
         }catch (Exception e){
            return new ResponseEntity("{\"message\":\"ERROR\"}",HttpStatus.BAD_REQUEST);
+        }
+
+    }
+
+    @RequestMapping(value = "/verifyCustomer", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity updateAdharInformation(@RequestBody VerificationCode verificationCode) {
+        HashMap<String,String> map = new HashMap<>();
+
+        if(verificationCode.getCode().equals(verificationMap.get(verificationCode.getCustomerId()))){
+            map.put("message:","success");
+            return new ResponseEntity(map,HttpStatus.OK);
+        }else {
+            return new ResponseEntity(map,HttpStatus.BAD_REQUEST);
         }
 
     }
