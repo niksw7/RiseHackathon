@@ -90,7 +90,8 @@ public class KycController {
     public ResponseEntity addCustomer(@RequestBody CustomerInformation customerInformation) {
 HashMap<String,String> map = new HashMap<>();
         int customerId = random.nextInt();
-        customerRepository.save(new Customer(customerId, customerInformation.getName(), customerInformation.getAge(), customerInformation.getAddress()));
+        customerRepository.save(new Customer(customerId, customerInformation.getName(), customerInformation.getAge(), customerInformation.getAddress(),customerInformation.getUserName(),
+                customerInformation.getPassword()));
         map.put("message","Success");
         map.put("customerId", ""+customerId+"");
         return new ResponseEntity(map, HttpStatus.OK);    }
@@ -131,5 +132,6 @@ HashMap<String,String> map = new HashMap<>();
         }
 
     }
+
 
 }

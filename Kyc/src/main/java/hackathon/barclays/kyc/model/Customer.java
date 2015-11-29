@@ -1,6 +1,5 @@
 package hackathon.barclays.kyc.model;
 
-
 import org.springframework.data.annotation.Id;
 
 import java.util.Set;
@@ -14,8 +13,11 @@ public class Customer {
     private String name;
     private int age;
     private String address;
-    private Set<String> documentName;
-    private String aadharNumber;
+	private String userName;
+	private String password;
+
+	private Set<String> documentName;
+	private String aadharNumber;
 
     public void verify() {
         this.status = VerificationStatus.Verified;
@@ -37,33 +39,67 @@ public class Customer {
         this.status = VerificationStatus.Not_Verified;
     }
 
-    public Integer getCustomerId() {
-        return customerId;
-    }
 
-    public String getName() {
-        return name;
-    }
 
-    public int getAge() {
-        return age;
-    }
+	public Customer(int customerId, String name, int age, String address,
+			Set<String> documentName, String aadharNumber,String userName,String password) {
+		this(customerId, name, age, address, userName, password);
+		this.documentName = documentName;
+		this.aadharNumber = aadharNumber;
+	}
 
-    public String getAddress() {
-        return address;
-    }
+	public Customer(Integer customerId, String name, int age, String address, String userName, String password) {
+		this.customerId = customerId;
+		this.name = name;
+		this.age = age;
+		this.address = address;
+	}
 
-    public Set<String> getDocumentName() {
-        return documentName;
-    }
-    public String getAadharNumber() {
-        return aadharNumber;
-    }
-    public void setAadharNumber(String aadharNumber) {
-        this.aadharNumber = aadharNumber;
-    }
+	public Integer getCustomerId() {
+		return customerId;
+	}
 
-    public void setDocumentName(Set<String> documentName) {
-        this.documentName = documentName;
-    }
+	public String getName() {
+		return name;
+	}
+
+	public int getAge() {
+		return age;
+	}
+
+	public String getAddress() {
+		return address;
+	}
+
+	public Set<String> getDocumentName() {
+		return documentName;
+	}
+
+	public String getAadharNumber() {
+		return aadharNumber;
+	}
+
+	public void setAadharNumber(String aadharNumber) {
+		this.aadharNumber = aadharNumber;
+	}
+
+	public void setDocumentName(Set<String> documentName) {
+		this.documentName = documentName;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
 }
