@@ -6,7 +6,11 @@ import org.springframework.data.annotation.Id;
 import java.util.Set;
 
 public class Customer {
+    public Customer() {
+    }
+
     @Id
+
     private Integer customerId;
     private String name;
     private int age;

@@ -25,15 +25,12 @@ public class KycController {
     private static final org.slf4j.Logger logger = LoggerFactory
             .getLogger(KycController.class);
 
-    private CustomerRepository customerRepository;
-    private  Random random;
-
 
     @Autowired
-    public KycController(CustomerRepository customerRepository,@Value("#{new java.util.Random()}")Random random){
-        this.customerRepository = customerRepository;
-        this.random = random;
-    }
+    private CustomerRepository customerRepository;
+
+    @Autowired
+    private @Value("#{new java.util.Random()}")Random random;
 
 
     @RequestMapping(value = "/greeting", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -69,14 +66,14 @@ public class KycController {
                 logger.info("Server File Location="
                         + serverFile.getAbsolutePath());
                 model.addAttribute("message", "Successfully uploaded file" + name);
-                return new ResponseEntity(model, HttpStatus.OK);
+                return new ResponseEntity("{\"message\":\"Success\"}",HttpStatus.OK);
             } catch (Exception e) {
                 model.addAttribute("message", "Your file uploading failed");
-                return new ResponseEntity(model, HttpStatus.BAD_REQUEST);
+                return new ResponseEntity("{\"message\":\"failure\"}",HttpStatus.BAD_REQUEST);
             }
         } else {
             model.addAttribute("message", "Empty uploading of files is rejected");
-            return new ResponseEntity(model, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity("{\"message\":\"Failure\"}",HttpStatus.BAD_REQUEST);
 
         }
     }
@@ -87,22 +84,25 @@ public class KycController {
         int customerId = random.nextInt();
         customerRepository.save(new Customer(customerId, customerInformation.getName(), customerInformation.getAge(), customerInformation.getAddress()));
         model.addAttribute("name", customerId);
-        return new ResponseEntity(model, HttpStatus.OK);
+        return  new ResponseEntity("{\"message\":\"Success\"}",HttpStatus.OK);
     }
 
     @RequestMapping(value = "/updateAdharInformation", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity updateAdharInformation(@RequestBody AdharInformation adharInformation, Model model) {
+        try {
+            Customer customer = customerRepository.findOne(adharInformation.getCustomerId());
+            customer.setAadharNumber(adharInformation.getAdharNumber());
+            customerRepository.save(customer);
 
-        Customer customer = customerRepository.findOne(adharInformation.getCustomerId());
-        customer.setAadharNumber(adharInformation.getAdharNumber());
-        customerRepository.save(customer);
+            //Let's mock the KYC thing for the time being as we do not have the KYC biometric in place
 
-        //Let's mock the KYC thing for the time being as we do not have the KYC biometric in place
+            //Send the OTP to verify the Emudra
 
-        //Send the OTP to verify the Emudra
-
-        model.addAttribute("message","Authenticated by UDIAI");
-        return new ResponseEntity(model,HttpStatus.OK);
+            model.addAttribute("message", "Authenticated by UDIAI");
+            return new ResponseEntity("{\"message\":\"Sucess\"}", HttpStatus.OK);
+        }catch (Exception e){
+           return new ResponseEntity("{\"message\":\"ERROR\"}",HttpStatus.BAD_REQUEST);
+        }
 
     }
 
