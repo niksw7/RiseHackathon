@@ -20,5 +20,9 @@ The details will be hashed and sent to UDAI server.(more details on low level wo
 
 The verification will require an OTP which will be sent on customer's mobile.
 On entering the right OTP, the customer would be recieving the digitally signed certificate.
-And whoa! the customer gets his bank account opened and also the facility to use his walet(no more limit of 10,000)
+And whoa! the customer gets his bank account opened and also the facility to use his walet(no more limit of 10,000 INR)
+
+The app also supports for the customers not having Adhar id.They simply need to upload the relevant documents.
+A selfie to verify themselves. But this will involve a manual background check to verify the customer's original document.(ImageProcessing to compare the uploaded documents and photographs needs to be researched).
+Yes but at the end it's the customer who lives the King's way. No hassles,No pain.
 
