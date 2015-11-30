@@ -5,7 +5,7 @@ This a simple yet disruptive/highly automated android/web application for automa
 
 The application is built on 2 important models
 1. Easing the customer workflow for opening a new account
-2. Adhering to govt guidelines .
+2. Adhering to govt guidelines  for opening a bank account.
 
 Vision1 :In the midst of night,if the customer feels to open the bank account,she will use the authentica app and in 5 touch  she knows she has selected the right bank.
 WorkFlow:
